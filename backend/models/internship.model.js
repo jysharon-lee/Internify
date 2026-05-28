@@ -25,7 +25,7 @@ const InternshipModel = {
       `SELECT
          i.id, i.title, i.location, i.work_type, i.stipend_min, i.stipend_max,
          i.duration_months, i.application_deadline, i.posted_at, i.slots, i.min_experience,
-         c.id AS company_id, c.name AS company_name, c.logo_url, c.industry
+         c.id AS company_id, c.name AS company_name, c.logo_url, c.industry, c.website
        FROM internships i
        JOIN companies c ON c.id = i.company_id
        WHERE ${whereClause}

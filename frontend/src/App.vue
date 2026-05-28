@@ -21,7 +21,9 @@
 <script setup>
 import { RouterView } from 'vue-router'
 import { useNotificationStore } from '@/stores/notification.store'
+import { useTheme } from '@/composables/useTheme'
 const notifStore = useNotificationStore()
+useTheme().init()
 </script>
 
 <style>
@@ -40,7 +42,7 @@ const notifStore = useNotificationStore()
   align-items: center;
   gap: 0.6rem;
   padding: 0.75rem 1.1rem;
-  background: var(--gray-900);
+  background: var(--toast-bg);
   color: #fff;
   border-radius: var(--border-radius);
   font-size: 0.875rem;

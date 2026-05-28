@@ -87,7 +87,7 @@ onMounted(() => internshipStore.fetchSkills())
 .skills-editor   { display:flex; flex-direction:column; gap:1rem; }
 .category-list   { display:flex; flex-direction:column; gap:1.25rem; max-height:320px; overflow-y:auto; padding-right:0.25rem; }
 .skill-grid      { display:flex; flex-wrap:wrap; gap:0.45rem; margin-top:0.5rem; }
-.skill-chip      { padding:0.3rem 0.875rem; border-radius:999px; border:1.5px solid var(--gray-200); background:#fff; font-size:0.82rem; font-weight:500; color:var(--gray-600); transition:var(--transition); cursor:pointer; }
+.skill-chip      { padding:0.3rem 0.875rem; border-radius:999px; border:1.5px solid var(--gray-200); background:var(--surface); font-size:0.82rem; font-weight:500; color:var(--gray-600); transition:var(--transition); cursor:pointer; }
 .skill-chip:hover { border-color:var(--brand-primary); color:var(--brand-primary); }
 .skill-chip.selected { background:var(--brand-primary); border-color:var(--brand-primary); color:#fff; }
 .selected-bar    { display:flex; align-items:center; justify-content:space-between; padding:0.6rem 0.875rem; background:var(--brand-primary-light); border-radius:var(--border-radius-sm); }

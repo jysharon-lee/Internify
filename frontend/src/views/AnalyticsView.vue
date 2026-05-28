@@ -40,7 +40,7 @@
 
       <!-- Empty state if no data -->
       <EmptyState
-        v-if="!summary || summary.total_applications === 0"
+        v-if="!summary || (summary.totalApplications ?? summary.total_applications ?? 0) === 0"
         icon="📊"
         title="No data yet"
         message="Start applying to internships to see your analytics."
@@ -78,19 +78,36 @@ const STAGE_COLORS = {
 const kpis = computed(() => {
   const s = summary.value
   if (!s) return []
-  const interviewRate = s.total_applications ? Math.round((s.interview_count / s.total_applications) * 100) : 0
-  const offerRate     = s.total_applications ? Math.round((s.offer_count / s.total_applications) * 100) : 0
+  const total         = s.totalApplications ?? s.total_applications ?? 0
+  const interviewCnt  = s.byStage?.interview ?? 0
+  const offerCnt      = s.byStage?.offers ?? s.byStage?.offer ?? 0
+  const interviewRate = total ? Math.round((interviewCnt / total) * 100) : 0
+  const offerRate     = total ? Math.round((offerCnt / total) * 100) : 0
+
+  // Compute avg match score from scoreByStage data
+  let avgScore = null
+  if (scoreDist.value.length > 0) {
+    let totalScore = 0, totalCount = 0
+    for (const r of scoreDist.value) {
+      const sc = r.avgScore ?? r.avg_score ?? 0
+      const ct = r.count ?? 0
+      totalScore += sc * ct
+      totalCount += ct
+    }
+    if (totalCount > 0) avgScore = Math.round(totalScore / totalCount)
+  }
+
   return [
-    { label: 'Total Applications', value: s.total_applications ?? 0, sub: 'all time', color: 'var(--brand-primary)' },
+    { label: 'Total Applications', value: total, sub: 'all time', color: 'var(--brand-primary)' },
     { label: 'Interview Rate',     value: interviewRate + '%',  sub: 'of applications', color: 'var(--stage-interview)' },
     { label: 'Offer Rate',         value: offerRate + '%',      sub: 'of applications', color: 'var(--stage-offer)' },
-    { label: 'Avg Match Score',    value: s.avg_match_score ? Math.round(s.avg_match_score) + '%' : '—', sub: 'across saved roles' },
+    { label: 'Avg Match Score',    value: avgScore !== null ? avgScore + '%' : '—', sub: 'across saved roles' },
   ]
 })
 
 // Bar chart: weekly applications
 const weeklyData = computed(() =>
-  weekly.value.map(w => ({ label: w.week_label || w.week, value: w.count || 0 }))
+  weekly.value.map(w => ({ label: w.week_label || w.week_start || w.week, value: w.count || 0 }))
 )
 
 // Donut: stage distribution — computed from store so it works offline
@@ -103,7 +120,7 @@ const stageData = computed(() => {
 
 // Bar chart: avg match score per stage from API
 const scoreData = computed(() =>
-  scoreDist.value.map(r => ({ label: r.stage, value: Math.round(r.avg_score || 0) }))
+  scoreDist.value.map(r => ({ label: r.stage, value: Math.round(r.avgScore ?? r.avg_score ?? 0) }))
 )
 
 async function load() {
@@ -136,5 +153,5 @@ onMounted(() => { load(); appStore.fetchAll() })
 .chart-card   { padding:1.25rem; }
 .chart-title  { font-size:0.875rem; font-weight:700; color:var(--gray-700); margin-bottom:1.1rem; }
 @media(max-width:1100px){ .kpi-grid{ grid-template-columns:repeat(2,1fr); } .charts-row{ grid-template-columns:1fr; } }
-@media(max-width:600px) { .kpi-grid{ grid-template-columns:1fr 1fr; } }
+@media(max-width:600px) { .kpi-grid{ grid-template-columns:1fr; } }
 </style>

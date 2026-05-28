@@ -10,7 +10,7 @@ const ApplicationModel = {
          a.created_at, a.updated_at,
          i.id AS internship_id, i.title, i.location, i.work_type,
          i.stipend_min, i.stipend_max, i.application_deadline,
-         c.name AS company_name, c.logo_url
+         c.name AS company_name, c.logo_url, c.website
        FROM applications a
        JOIN internships i ON i.id = a.internship_id
        JOIN companies   c ON c.id = i.company_id
@@ -41,11 +41,13 @@ const ApplicationModel = {
     return cnt > 0;
   },
 
-  async create({ user_id, internship_id, match_score, notes, cover_letter }) {
+  async create({ user_id, internship_id, match_score, notes, cover_letter, stage }) {
+    const initialStage = stage || 'saved';
+    const appliedAt    = initialStage === 'applied' ? new Date() : null;
     const [result] = await pool.query(
-      `INSERT INTO applications (user_id, internship_id, match_score, notes, cover_letter)
-       VALUES (?, ?, ?, ?, ?)`,
-      [user_id, internship_id, match_score || null, notes || null, cover_letter || null]
+      `INSERT INTO applications (user_id, internship_id, match_score, notes, cover_letter, stage, applied_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [user_id, internship_id, match_score || null, notes || null, cover_letter || null, initialStage, appliedAt]
     );
     return result.insertId;
   },

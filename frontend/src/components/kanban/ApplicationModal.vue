@@ -98,7 +98,7 @@ function save() {
 
 <style scoped>
 .modal-overlay  { position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:8000; display:flex; align-items:center; justify-content:center; padding:1rem; }
-.modal-box      { background:#fff; border-radius:var(--border-radius-lg); box-shadow:var(--shadow-xl); padding:1.75rem; width:100%; max-width:480px; display:flex; flex-direction:column; gap:1.25rem; }
+.modal-box      { background:var(--surface-raised); border-radius:var(--border-radius-lg); box-shadow:var(--shadow-xl); padding:1.75rem; width:100%; max-width:480px; display:flex; flex-direction:column; gap:1.25rem; }
 .modal-header   { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; }
 .modal-company  { font-size:0.78rem; color:var(--gray-500); font-weight:600; text-transform:uppercase; letter-spacing:0.04em; }
 .modal-title    { font-size:1rem; font-weight:800; color:var(--gray-900); letter-spacing:-0.01em; margin-top:2px; }

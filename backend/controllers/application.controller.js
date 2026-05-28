@@ -45,7 +45,7 @@ exports.detail = async (req, res, next) => {
  */
 exports.create = async (req, res, next) => {
   try {
-    const { internship_id, notes, cover_letter } = req.body;
+    const { internship_id, notes, cover_letter, stage } = req.body;
 
     if (!internship_id) throw createError(400, 'internship_id is required.');
 
@@ -66,13 +66,14 @@ exports.create = async (req, res, next) => {
     const userWithSkills = { ...user, skills: userSkills };
     const match = computeMatchScore(userWithSkills, internship);
 
-    // create application with cached score
+    // create application with cached score (stage defaults to 'saved' in model)
     const appId = await ApplicationModel.create({
       user_id:       req.user.id,
       internship_id,
       match_score:   match.score,
       notes:         notes || null,
       cover_letter:  cover_letter || null,
+      stage:         stage || undefined,
     });
 
     const app = await ApplicationModel.findOne(appId, req.user.id);

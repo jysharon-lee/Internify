@@ -11,6 +11,7 @@
         v-model="searchRaw"
         class="form-control search-input"
         placeholder="🔍  Search by title, company or skill…"
+        aria-label="Search by title, company or skill"
       />
       <div class="type-filters">
         <button
@@ -18,6 +19,7 @@
           :key="t.value"
           class="type-btn"
           :class="{ active: internshipStore.filters.work_type === t.value }"
+          :aria-pressed="internshipStore.filters.work_type === t.value"
           @click="setType(t.value)"
         >{{ t.label }}</button>
       </div>
@@ -50,6 +52,7 @@
         :internship="item"
         @click="router.push({ name: 'internship-detail', params: { id: item.id } })"
         @apply="saveInternship(item)"
+        @apply-now="applyNow(item)"
       />
     </div>
 
@@ -133,6 +136,20 @@ async function saveInternship(item) {
   }
 }
 
+async function applyNow(item) {
+  try {
+    // Open company website in new tab
+    if (item.website) {
+      window.open(item.website, '_blank', 'noopener,noreferrer')
+    }
+    // Create application as 'applied'
+    await appStore.apply(item.id)
+    notifStore.toast(`Applied to "${item.title}" — check your Tracker`, 'success')
+  } catch (err) {
+    notifStore.toast(err.message || 'Could not apply', 'error')
+  }
+}
+
 onMounted(() => internshipStore.fetchAll())
 </script>
 
@@ -141,7 +158,7 @@ onMounted(() => internshipStore.fetchAll())
 .filter-bar     { display:flex; flex-wrap:wrap; align-items:center; gap:0.75rem; }
 .search-input   { flex:1; min-width:200px; max-width:420px; }
 .type-filters   { display:flex; flex-wrap:wrap; gap:0.4rem; }
-.type-btn       { padding:0.35rem 0.9rem; border-radius:999px; border:1.5px solid var(--gray-200); background:#fff; font-size:0.82rem; font-weight:500; color:var(--gray-600); cursor:pointer; transition:var(--transition); }
+.type-btn       { padding:0.35rem 0.9rem; border-radius:999px; border:1.5px solid var(--gray-200); background:var(--surface); font-size:0.82rem; font-weight:500; color:var(--gray-600); cursor:pointer; transition:var(--transition); }
 .type-btn:hover { border-color:var(--brand-primary); color:var(--brand-primary); }
 .type-btn.active{ background:var(--brand-primary); border-color:var(--brand-primary); color:#fff; }
 .results-meta   { display:flex; align-items:center; justify-content:space-between; }

@@ -178,7 +178,7 @@ onMounted(() => internshipStore.fetchSkills())
 .step-indicators { display:flex; gap:0.75rem; margin-bottom:2rem; }
 .step-dot { width:28px; height:28px; border-radius:999px; background:var(--gray-200); color:var(--gray-500); font-size:0.72rem; font-weight:700; display:flex; align-items:center; justify-content:center; transition:var(--transition); }
 .step-dot.active { background:var(--brand-primary); color:#fff; } .step-dot.done { background:var(--success); color:#fff; }
-.onboarding-card { background:#fff; border-radius:var(--border-radius-lg); border:1px solid var(--gray-200); box-shadow:var(--shadow-lg); padding:2.5rem; width:100%; max-width:520px; }
+.onboarding-card { background:var(--surface); border-radius:var(--border-radius-lg); border:1px solid var(--gray-200); box-shadow:var(--shadow-lg); padding:2.5rem; width:100%; max-width:520px; }
 .step-title { font-size:1.35rem; font-weight:800; color:var(--gray-900); letter-spacing:-0.02em; }
 .step-subtitle { font-size:0.875rem; color:var(--gray-500); margin-top:0.25rem; margin-bottom:1.75rem; }
 .step-form { display:flex; flex-direction:column; gap:1rem; }
@@ -186,7 +186,7 @@ onMounted(() => internshipStore.fetchSkills())
 .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
 .skill-category { margin-bottom:1.25rem; }
 .skill-grid { display:flex; flex-wrap:wrap; gap:0.5rem; }
-.skill-chip { padding:0.3rem 0.85rem; border-radius:999px; border:1.5px solid var(--gray-200); background:#fff; font-size:0.82rem; font-weight:500; color:var(--gray-600); transition:var(--transition); cursor:pointer; }
+.skill-chip { padding:0.3rem 0.85rem; border-radius:999px; border:1.5px solid var(--gray-200); background:var(--surface); font-size:0.82rem; font-weight:500; color:var(--gray-600); transition:var(--transition); cursor:pointer; }
 .skill-chip:hover { border-color:var(--brand-primary); color:var(--brand-primary); }
 .skill-chip.selected { background:var(--brand-primary); border-color:var(--brand-primary); color:#fff; }
 .selected-bar { margin-top:1rem; padding:0.6rem 0.875rem; background:var(--brand-primary-light); border-radius:var(--border-radius-sm); }
@@ -195,7 +195,7 @@ onMounted(() => internshipStore.fetchSkills())
 .exp-labels span { font-size:0.72rem; color:var(--gray-400); }
 .exp-labels span.active { color:var(--brand-primary); font-weight:700; }
 .type-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.6rem; }
-.type-chip { display:flex; flex-direction:column; align-items:center; gap:0.3rem; padding:0.75rem 0.5rem; border-radius:var(--border-radius-sm); border:1.5px solid var(--gray-200); background:#fff; font-size:0.82rem; font-weight:500; color:var(--gray-600); cursor:pointer; transition:var(--transition); }
+.type-chip { display:flex; flex-direction:column; align-items:center; gap:0.3rem; padding:0.75rem 0.5rem; border-radius:var(--border-radius-sm); border:1.5px solid var(--gray-200); background:var(--surface); font-size:0.82rem; font-weight:500; color:var(--gray-600); cursor:pointer; transition:var(--transition); }
 .type-chip:hover { border-color:var(--brand-primary); }
 .type-chip.selected { border-color:var(--brand-primary); background:var(--brand-primary-light); color:var(--brand-primary); }
 .type-icon { font-size:1.2rem; }

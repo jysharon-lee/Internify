@@ -61,7 +61,7 @@ async function start() {
 
     // Start server
     app.listen(PORT, () => {
-      console.log(`\n✨ Internify Backend running on http://localhost:${PORT}`);
+      console.log(`\nInternify Backend running on http://localhost:${PORT}`);
       console.log(`CORS enabled for: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
       console.log(`Database: ${process.env.DB_NAME}\n`);
     });

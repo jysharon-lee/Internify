@@ -57,7 +57,7 @@ function onDrop(e) {
 </script>
 
 <style scoped>
-.kanban-col     { display:flex; flex-direction:column; min-width:220px; flex:1; background:var(--gray-50); border-radius:var(--border-radius); border:1px solid var(--gray-200); overflow:hidden; transition:var(--transition); }
+.kanban-col     { display:flex; flex-direction:column; min-width:280px; flex:1; background:var(--gray-50); border-radius:var(--border-radius); border:1px solid var(--gray-200); overflow:hidden; transition:var(--transition); }
 .kanban-col.drag-over { border-color:var(--brand-primary); box-shadow:0 0 0 3px rgba(79,70,229,0.12); }
 .col-header     { display:flex; align-items:center; justify-content:space-between; padding:0.7rem 0.875rem; border-bottom:2px solid transparent; }
 .col-title      { font-size:0.82rem; font-weight:700; }

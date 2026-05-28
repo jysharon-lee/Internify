@@ -74,7 +74,7 @@ function clear() { file.value = null; emit('change', null) }
 </script>
 
 <style scoped>
-.resume-upload   { border:2px dashed var(--gray-300); border-radius:var(--border-radius); padding:1.75rem; text-align:center; transition:var(--transition); background:#fff; }
+.resume-upload   { border:2px dashed var(--gray-300); border-radius:var(--border-radius); padding:1.75rem; text-align:center; transition:var(--transition); background:var(--surface); }
 .resume-upload.dragover { border-color:var(--brand-primary); background:var(--brand-primary-light); }
 .resume-upload.has-file { border-style:solid; border-color:var(--success); }
 .drop-content    { display:flex; flex-direction:column; align-items:center; gap:0.1rem; }

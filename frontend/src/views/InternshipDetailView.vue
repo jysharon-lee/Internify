@@ -18,7 +18,7 @@
           <div class="dh-top">
             <img
               :src="job.logo_url || fallbackLogo"
-              :alt="job.company_name"
+              :alt="job.company_name + ' logo'"
               class="dh-logo"
               @error="$event.target.src = fallbackLogo"
             />
@@ -74,14 +74,23 @@
           <div v-if="isApplied">
             <p class="text-sm text-muted" style="margin-bottom:0.5rem">Already in your tracker as:</p>
             <span class="stage-badge" :class="applicationStage">{{ STAGE_LABELS[applicationStage] }}</span>
-            <RouterLink to="/tracker" class="btn btn-outline btn-block" style="margin-top:0.875rem">Open Tracker →</RouterLink>
+            <div class="apply-actions" style="margin-top:0.875rem">
+              <RouterLink to="/tracker" class="btn btn-outline btn-block">Open Tracker →</RouterLink>
+              <a v-if="job.website" :href="job.website" target="_blank" rel="noopener" class="btn btn-ghost btn-block btn-sm" style="margin-top:0.5rem">🌐 Visit Company</a>
+            </div>
           </div>
-          <div v-else>
-            <button class="btn btn-primary btn-block btn-lg" :disabled="saving" @click="saveApp">
-              <span v-if="saving" class="spinner"></span>
-              🔖 Save Internship
+          <div v-else class="apply-actions">
+            <button class="btn btn-primary btn-block btn-lg" :disabled="applying" @click="applyNow">
+              <span v-if="applying" class="spinner"></span>
+              🚀 Apply Now
             </button>
-            <p class="text-xs text-muted" style="text-align:center;margin-top:0.5rem">Saves to "Saved" stage in your tracker</p>
+            <p class="text-xs text-muted" style="text-align:center;margin-top:0.25rem">Opens company page & marks as "Applied"</p>
+            <hr class="divider" />
+            <button class="btn btn-outline btn-block" :disabled="saving" @click="saveApp">
+              <span v-if="saving" class="spinner"></span>
+              🔖 Save for Later
+            </button>
+            <p class="text-xs text-muted" style="text-align:center;margin-top:0.25rem">Saves to "Saved" stage in your tracker</p>
           </div>
         </div>
 
@@ -128,7 +137,8 @@ const appStore        = useApplicationStore()
 const notifStore      = useNotificationStore()
 const { scoreColor, scoreLabel } = useMatchScore()
 
-const saving = ref(false)
+const saving   = ref(false)
+const applying = ref(false)
 const job = computed(() => internshipStore.current)
 
 const WORK_LABELS  = { 'full-time':'🏢 Full-time', 'part-time':'⏰ Part-time', remote:'🏠 Remote', hybrid:'🔀 Hybrid' }
@@ -163,6 +173,25 @@ async function saveApp() {
     notifStore.toast(err.message || 'Could not save', 'error')
   } finally {
     saving.value = false
+  }
+}
+
+async function applyNow() {
+  applying.value = true
+  try {
+    // 1. Open company website in new tab
+    const url = job.value.website
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer')
+    }
+
+    // 2. Create application as 'applied'
+    await appStore.apply(job.value.id)
+    notifStore.toast(`Applied to "${job.value.title}" — moved to Applied in tracker`, 'success')
+  } catch (err) {
+    notifStore.toast(err.message || 'Could not apply', 'error')
+  } finally {
+    applying.value = false
   }
 }
 

@@ -25,6 +25,12 @@ export const useApplicationStore = defineStore('application', () => {
     return res.data
   }
 
+  async function apply(internshipId, data = {}) {
+    const res = await applicationService.create({ internship_id: internshipId, stage: 'applied', ...data })
+    grouped.value.applied.unshift(res.data)
+    return res.data
+  }
+
   async function moveStage(appId, fromStage, toStage) {
     const fromList = grouped.value[fromStage]
     const idx = fromList.findIndex(a => a.id === appId)
@@ -59,5 +65,5 @@ export const useApplicationStore = defineStore('application', () => {
     return null
   }
 
-  return { grouped, loading, error, totalCount, activeCount, fetchAll, save, moveStage, updateApp, remove, isApplied, getApplication }
+  return { grouped, loading, error, totalCount, activeCount, fetchAll, save, apply, moveStage, updateApp, remove, isApplied, getApplication }
 })

@@ -1,8 +1,8 @@
 <template>
-  <div class="internship-card" @click="$emit('click')">
+  <div class="internship-card" @click="$emit('click')" tabindex="0" @keydown.enter.prevent="$emit('click')">
     <div class="card-top">
       <div class="company-info">
-        <img :src="internship.logo_url || fallbackLogo" :alt="internship.company_name" class="company-logo" @error="$event.target.src = fallbackLogo" />
+        <img :src="internship.logo_url || fallbackLogo" :alt="internship.company_name + ' logo'" class="company-logo" @error="$event.target.src = fallbackLogo" />
         <div>
           <p class="company-name">{{ internship.company_name }}</p>
           <p class="text-xs text-muted">{{ internship.industry }}</p>
@@ -26,8 +26,13 @@
         {{ isUrgent ? '⚠️ ' : '📅 ' }}{{ deadlineText }}
       </span>
       <div class="card-actions">
-        <button v-if="isApplied" class="btn btn-sm" :class="`stage-btn-${applicationStage}`" @click.stop>{{ stageLabel }}</button>
-        <button v-else class="btn btn-primary btn-sm" @click.stop="$emit('apply', internship)">Save</button>
+        <template v-if="isApplied">
+          <button class="btn btn-sm" :class="`stage-btn-${applicationStage}`" @click.stop>{{ stageLabel }}</button>
+        </template>
+        <template v-else>
+          <button class="btn btn-primary btn-sm" @click.stop="$emit('apply-now', internship)" title="Apply & open company site" :aria-label="'Apply to ' + internship.title">Apply</button>
+          <button class="btn btn-outline btn-sm" @click.stop="$emit('apply', internship)" title="Save for later" :aria-label="'Save ' + internship.title">Save</button>
+        </template>
       </div>
     </div>
     <div v-if="internship.match?.explanation" class="match-hint text-xs text-muted">
@@ -41,7 +46,7 @@ import { computed } from 'vue'
 import MatchScoreBadge from './MatchScoreBadge.vue'
 import { useApplicationStore } from '@/stores/application.store'
 const props = defineProps({ internship: { type: Object, required: true } })
-defineEmits(['click','apply'])
+defineEmits(['click','apply','apply-now'])
 const appStore = useApplicationStore()
 const fallbackLogo = `https://ui-avatars.com/api/?name=${encodeURIComponent(props.internship.company_name||'C')}&background=4F46E5&color=fff&size=48`
 const requiredSkills  = computed(() => (props.internship.skills||[]).filter(s => s.is_required))
@@ -58,7 +63,7 @@ const deadlineText = computed(() => { if (deadlineDays.value===null) return ''; 
 </script>
 
 <style scoped>
-.internship-card { background:#fff; border:1px solid var(--gray-200); border-radius:var(--border-radius); padding:1.25rem; cursor:pointer; transition:var(--transition); display:flex; flex-direction:column; gap:0.75rem; }
+.internship-card { background:var(--surface); border:1px solid var(--gray-200); border-radius:var(--border-radius); padding:1.25rem; cursor:pointer; transition:var(--transition); display:flex; flex-direction:column; gap:0.75rem; }
 .internship-card:hover { border-color:var(--brand-primary); box-shadow:var(--shadow-md); transform:translateY(-2px); }
 .card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:0.75rem; }
 .company-info { display:flex; align-items:center; gap:0.6rem; min-width:0; }
@@ -70,6 +75,7 @@ const deadlineText = computed(() => { if (deadlineDays.value===null) return ''; 
 .meta-chip.type-remote { background:#ECFDF5; color:var(--success); } .meta-chip.type-hybrid { background:#EFF6FF; color:var(--info); }
 .card-skills { display:flex; flex-wrap:wrap; gap:0.35rem; }
 .card-footer { display:flex; align-items:center; justify-content:space-between; margin-top:auto; }
+.card-actions { display:flex; gap:0.35rem; }
 .stage-btn-saved { background:#EEF2FF; color:var(--stage-saved); border-color:transparent; }
 .stage-btn-applied { background:#EFF6FF; color:var(--stage-applied); border-color:transparent; }
 .stage-btn-interview { background:#FFFBEB; color:var(--stage-interview); border-color:transparent; }

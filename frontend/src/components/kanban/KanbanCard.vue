@@ -64,7 +64,7 @@ function onDragStart(e) {
 </script>
 
 <style scoped>
-.kanban-card   { background:#fff; border:1px solid var(--gray-200); border-radius:var(--border-radius-sm); padding:0.875rem; cursor:grab; transition:var(--transition); display:flex; flex-direction:column; gap:0.45rem; }
+.kanban-card   { background:var(--surface); border:1px solid var(--gray-200); border-radius:var(--border-radius-sm); padding:0.875rem; cursor:grab; transition:var(--transition); display:flex; flex-direction:column; gap:0.45rem; }
 .kanban-card:active { cursor:grabbing; opacity:0.8; }
 .kanban-card:hover  { box-shadow:var(--shadow-md); border-color:var(--brand-primary); }
 .kcard-top     { display:flex; align-items:center; justify-content:space-between; gap:0.5rem; }

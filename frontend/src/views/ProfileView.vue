@@ -279,7 +279,8 @@ onMounted(async () => {
 
 <style scoped>
 .profile       { display:flex; flex-direction:column; gap:1.5rem; }
-.tab-bar       { display:flex; gap:0.25rem; border-bottom:1px solid var(--gray-200); }
+.tab-bar       { display:flex; gap:0.25rem; border-bottom:1px solid var(--gray-200); overflow-x:auto; scrollbar-width:none; }
+.tab-bar::-webkit-scrollbar { display:none; }
 .tab-btn       { padding:0.6rem 1rem; font-size:0.875rem; font-weight:600; color:var(--gray-500); background:none; border:none; border-bottom:2px solid transparent; transition:var(--transition); cursor:pointer; margin-bottom:-1px; white-space:nowrap; }
 .tab-btn:hover { color:var(--gray-800); }
 .tab-btn.active{ color:var(--brand-primary); border-bottom-color:var(--brand-primary); }
@@ -296,7 +297,7 @@ onMounted(async () => {
 .form-actions  { display:flex; justify-content:flex-end; margin-top:1.5rem; padding-top:1.25rem; border-top:1px solid var(--gray-100); }
 .exp-slider    { width:100%; accent-color:var(--brand-primary); margin-top:0.5rem; }
 .type-grid     { display:grid; grid-template-columns:repeat(5,1fr); gap:0.5rem; margin-top:0.375rem; }
-.type-chip     { display:flex; flex-direction:column; align-items:center; gap:0.25rem; padding:0.6rem 0.25rem; border-radius:var(--border-radius-sm); border:1.5px solid var(--gray-200); background:#fff; font-size:0.75rem; font-weight:500; color:var(--gray-600); cursor:pointer; transition:var(--transition); }
+.type-chip     { display:flex; flex-direction:column; align-items:center; gap:0.25rem; padding:0.6rem 0.25rem; border-radius:var(--border-radius-sm); border:1.5px solid var(--gray-200); background:var(--surface); font-size:0.75rem; font-weight:500; color:var(--gray-600); cursor:pointer; transition:var(--transition); }
 .type-chip:hover   { border-color:var(--brand-primary); }
 .type-chip.selected{ border-color:var(--brand-primary); background:var(--brand-primary-light); color:var(--brand-primary); }
 @media(max-width:700px){ .form-grid{ grid-template-columns:1fr; } .span-2{ grid-column:span 1; } .type-grid{ grid-template-columns:repeat(3,1fr); } }

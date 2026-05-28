@@ -46,12 +46,13 @@ const total  = computed(() => props.data.reduce((s, d) => s + (d.value || 0), 0)
 
 const segments = computed(() => {
   if (!total.value) return []
-  let offset = 0
+  let cumulative = 0
   return props.data.map(item => {
-    const pct  = item.value / total.value
-    const dash = `${pct * circ.value} ${circ.value}`
-    const seg  = { color: item.color, dash, offset: circ.value - offset }
-    offset += pct * circ.value
+    const pct    = item.value / total.value
+    const arcLen = pct * circ.value
+    const gapLen = circ.value - arcLen
+    const seg    = { color: item.color, dash: `${arcLen} ${gapLen}`, offset: -cumulative }
+    cumulative  += arcLen
     return seg
   })
 })

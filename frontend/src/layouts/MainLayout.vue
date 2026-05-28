@@ -1,18 +1,18 @@
 <template>
   <div class="main-layout" :class="{ 'sidebar-collapsed': sidebarCollapsed }">
-    <aside class="sidebar" :class="{ collapsed: sidebarCollapsed }">
+    <nav class="sidebar" :class="{ collapsed: sidebarCollapsed }" aria-label="Main Navigation">
       <div class="sidebar-header">
         <div class="sidebar-logo">
           <span class="logo-icon">✦</span>
           <Transition name="fade"><span v-if="!sidebarCollapsed" class="logo-text">Internify</span></Transition>
         </div>
-        <button class="sidebar-toggle" @click="toggleSidebar" v-if="!isMobile">
+        <button class="sidebar-toggle" @click="toggleSidebar" v-if="!isMobile" aria-label="Toggle sidebar">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M15 18l-6-6 6-6" v-if="!sidebarCollapsed"/><path d="M9 18l6-6-6-6" v-else/>
           </svg>
         </button>
       </div>
-      <nav class="sidebar-nav">
+      <div class="sidebar-nav" role="navigation" aria-label="Sidebar Links">
         <div class="nav-section">
           <span class="section-label" v-if="!sidebarCollapsed">Main</span>
           <RouterLink v-for="item in navItems" :key="item.name" :to="item.path" class="nav-item" :class="{ active: $route.path.startsWith(item.path) }" :title="sidebarCollapsed ? item.label : ''">
@@ -21,7 +21,7 @@
             <span v-if="!sidebarCollapsed && item.badge" class="nav-badge">{{ item.badge }}</span>
           </RouterLink>
         </div>
-      </nav>
+      </div>
       <div class="sidebar-footer">
         <RouterLink to="/profile" class="sidebar-user" :title="sidebarCollapsed ? authStore.fullName : ''">
           <div class="user-avatar">{{ initials }}</div>
@@ -37,19 +37,19 @@
           <Transition name="fade"><span v-if="!sidebarCollapsed">Logout</span></Transition>
         </button>
       </div>
-    </aside>
+    </nav>
 
     <div class="main-content">
       <header class="navbar">
         <div class="navbar-left">
-          <button class="mobile-menu-btn" @click="toggleMobileSidebar" v-if="isMobile">
+          <button class="mobile-menu-btn" @click="toggleMobileSidebar" v-if="isMobile" aria-label="Toggle mobile menu" :aria-expanded="mobileSidebarOpen">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
           <h1 class="navbar-title">{{ pageTitle }}</h1>
         </div>
         <div class="navbar-right">
           <div class="notif-btn-wrap" ref="notifRef">
-            <button class="icon-btn" @click="showNotifs = !showNotifs">
+            <button class="icon-btn" aria-label="Notifications" @click="showNotifs = !showNotifs">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>
               <span v-if="notifStore.unreadCount" class="notif-dot">{{ notifStore.unreadCount }}</span>
             </button>
@@ -67,17 +67,20 @@
               </div>
             </div>
           </div>
-          <RouterLink to="/profile" class="navbar-avatar">{{ initials }}</RouterLink>
+          <button class="icon-btn theme-toggle" @click="toggleTheme" aria-label="Toggle dark mode" :title="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
+            <span>{{ isDark ? '☀️' : '🌙' }}</span>
+          </button>
+          <RouterLink to="/profile" class="navbar-avatar" aria-label="User Profile">{{ initials }}</RouterLink>
         </div>
       </header>
-      <main class="page-content">
+      <main id="main-content" class="page-content">
         <RouterView v-slot="{ Component }">
           <Transition name="fade" mode="out-in"><component :is="Component" /></Transition>
         </RouterView>
       </main>
     </div>
 
-    <nav class="bottom-nav" v-if="isMobile">
+    <nav class="bottom-nav" v-if="isMobile" aria-label="Mobile Navigation">
       <RouterLink v-for="item in navItems" :key="item.name" :to="item.path" class="bottom-nav-item" :class="{ active: $route.path.startsWith(item.path) }">
         <span class="bottom-nav-icon" v-html="item.icon"></span>
         <span class="bottom-nav-label">{{ item.label }}</span>
@@ -93,12 +96,14 @@ import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
 import { useAuthStore }        from '@/stores/auth.store'
 import { useApplicationStore } from '@/stores/application.store'
 import { useNotificationStore } from '@/stores/notification.store'
+import { useTheme }            from '@/composables/useTheme'
 
-const route     = useRoute()
-const router    = useRouter()
-const authStore = useAuthStore()
-const appStore  = useApplicationStore()
+const route      = useRoute()
+const router     = useRouter()
+const authStore  = useAuthStore()
+const appStore   = useApplicationStore()
 const notifStore = useNotificationStore()
+const { isDark, toggle: toggleTheme } = useTheme()
 
 const sidebarCollapsed  = ref(false)
 const mobileSidebarOpen = ref(false)
@@ -135,8 +140,8 @@ onUnmounted(() => { window.removeEventListener('resize', checkMobile); document.
 </script>
 
 <style scoped>
-.main-layout { display:flex; min-height:100vh; }
-.sidebar { position:fixed; top:0; left:0; bottom:0; width:var(--sidebar-width); background:#fff; border-right:1px solid var(--gray-200); display:flex; flex-direction:column; z-index:200; transition:width 0.25s ease; overflow:hidden; }
+.main-layout { display:flex; min-height:100vh; overflow-x:hidden; width:100%; }
+.sidebar { position:fixed; top:0; left:0; bottom:0; width:var(--sidebar-width); background:var(--surface); border-right:1px solid var(--gray-200); display:flex; flex-direction:column; z-index:200; transition:width 0.25s ease,background 0.2s ease; overflow:hidden; }
 .sidebar.collapsed { width:var(--sidebar-collapsed); }
 .sidebar-header { display:flex; align-items:center; justify-content:space-between; padding:1.25rem 1rem; height:var(--navbar-height); border-bottom:1px solid var(--gray-100); flex-shrink:0; }
 .sidebar-logo { display:flex; align-items:center; gap:0.5rem; overflow:hidden; }
@@ -162,7 +167,7 @@ onUnmounted(() => { window.removeEventListener('resize', checkMobile); document.
 .user-role { font-size:0.72rem; color:var(--gray-500); }
 .logout-btn { display:flex; align-items:center; gap:0.75rem; padding:0.6rem 0.75rem; border-radius:var(--border-radius-sm); border:none; background:none; color:var(--gray-500); font-size:0.875rem; font-weight:500; transition:var(--transition); width:100%; overflow:hidden; white-space:nowrap; }
 .logout-btn:hover { background:#FEF2F2; color:var(--danger); }
-.navbar { position:fixed; top:0; left:var(--sidebar-width); right:0; height:var(--navbar-height); background:#fff; border-bottom:1px solid var(--gray-200); display:flex; align-items:center; justify-content:space-between; padding:0 1.5rem; z-index:100; transition:left 0.25s ease; }
+.navbar { position:fixed; top:0; left:var(--sidebar-width); right:0; height:var(--navbar-height); background:var(--surface); border-bottom:1px solid var(--gray-200); display:flex; align-items:center; justify-content:space-between; padding:0 1.5rem; z-index:100; transition:left 0.25s ease,background 0.2s ease; }
 .sidebar-collapsed .navbar { left:var(--sidebar-collapsed); }
 .navbar-left { display:flex; align-items:center; gap:0.75rem; }
 .navbar-title { font-size:1rem; font-weight:700; color:var(--gray-900); }
@@ -172,7 +177,7 @@ onUnmounted(() => { window.removeEventListener('resize', checkMobile); document.
 .icon-btn:hover { background:var(--gray-100); }
 .notif-dot { position:absolute; top:-5px; right:-5px; background:var(--danger); color:#fff; font-size:0.62rem; font-weight:700; width:17px; height:17px; border-radius:999px; display:flex; align-items:center; justify-content:center; border:2px solid #fff; }
 .notif-btn-wrap { position:relative; }
-.notif-panel { position:absolute; top:calc(100% + 8px); right:0; width:320px; background:#fff; border:1px solid var(--gray-200); border-radius:var(--border-radius); box-shadow:var(--shadow-xl); z-index:300; overflow:hidden; }
+.notif-panel { position:absolute; top:calc(100% + 8px); right:0; width:320px; background:var(--surface-raised); border:1px solid var(--gray-200); border-radius:var(--border-radius); box-shadow:var(--shadow-xl); z-index:300; overflow:hidden; }
 .notif-panel-header { display:flex; align-items:center; justify-content:space-between; padding:0.75rem 1rem; border-bottom:1px solid var(--gray-100); font-size:0.875rem; font-weight:600; color:var(--gray-800); }
 .notif-mark-read { background:none; border:none; font-size:0.75rem; color:var(--brand-primary); font-weight:500; }
 .notif-list { max-height:320px; overflow-y:auto; }
@@ -188,14 +193,14 @@ onUnmounted(() => { window.removeEventListener('resize', checkMobile); document.
 .notif-empty { padding:1.5rem; text-align:center; font-size:0.875rem; color:var(--gray-400); }
 .navbar-avatar { width:34px; height:34px; background:var(--brand-primary); color:#fff; border-radius:999px; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; text-decoration:none; transition:var(--transition); }
 .navbar-avatar:hover { opacity:0.85; }
-.main-content { margin-left:var(--sidebar-width); flex:1; min-height:100vh; display:flex; flex-direction:column; transition:margin-left 0.25s ease; }
+.main-content { margin-left:var(--sidebar-width); flex:1; min-width:0; min-height:100vh; display:flex; flex-direction:column; transition:margin-left 0.25s ease; }
 .sidebar-collapsed .main-content { margin-left:var(--sidebar-collapsed); }
 .page-content { margin-top:var(--navbar-height); padding:2rem 1.75rem; flex:1; }
-.bottom-nav { position:fixed; bottom:0; left:0; right:0; height:64px; background:#fff; border-top:1px solid var(--gray-200); display:flex; align-items:stretch; z-index:200; box-shadow:0 -2px 10px rgb(0 0 0/0.06); }
+.bottom-nav { position:fixed; bottom:0; left:0; right:0; height:64px; background:var(--surface); border-top:1px solid var(--gray-200); display:flex; align-items:stretch; z-index:200; box-shadow:0 -2px 10px rgb(0 0 0/0.06); }
 .bottom-nav-item { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; color:var(--gray-400); text-decoration:none; font-size:0.65rem; font-weight:500; transition:var(--transition); }
 .bottom-nav-item.active { color:var(--brand-primary); }
 .bottom-nav-icon { display:flex; }
 .mobile-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:199; }
 @media(max-width:991px){ .sidebar{ width:var(--sidebar-collapsed); } .navbar{ left:var(--sidebar-collapsed); } .main-content{ margin-left:var(--sidebar-collapsed); } }
-@media(max-width:767px){ .sidebar{ transform:translateX(-100%); width:var(--sidebar-width); } .navbar{ left:0; padding:0 1rem; } .main-content{ margin-left:0; } .page-content{ padding:1.25rem 1rem; } .sidebar-collapsed .navbar{ left:0; } .sidebar-collapsed .main-content{ margin-left:0; } }
+@media(max-width:767px){ .sidebar{ transform:translateX(-100%); width:var(--sidebar-width); } .navbar{ left:0; padding:0 1rem; } .main-content{ margin-left:0; } .page-content{ padding:1.25rem 1rem 80px 1rem; } .sidebar-collapsed .navbar{ left:0; } .sidebar-collapsed .main-content{ margin-left:0; } }
 </style>
